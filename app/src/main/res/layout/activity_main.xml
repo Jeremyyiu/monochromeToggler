@@ -21,6 +21,6 @@
         android:layout_height="wrap_content"
         android:background="#1E88E5"
         android:layout_gravity="center_horizontal"
-        materialdesign:check="false" />
+        materialdesign:check="true" />
 
 </LinearLayout>

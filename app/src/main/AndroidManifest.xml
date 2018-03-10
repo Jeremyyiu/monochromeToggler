@@ -3,6 +3,7 @@
     package="com.example.jeremy.monochrometoggler">
 
     <uses-permission android:name="android.permission.WRITE_SETTINGS"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"></uses-permission>
 
     <application
         android:allowBackup="true"

@@ -26,30 +26,34 @@ public class MainActivity extends AppCompatActivity {
 
         context = getApplicationContext();
 
+
         Switch monochromeSwitch = (Switch) findViewById(R.id.monochromeSwitch);
         initMonochromeSwitch(monochromeSwitch);
     }
 
-    private void initMonochromeSwitch(Switch monochromeSwitch) {
-        boolean monochromeStatus = monochromeStatus();
-        monochromeSwitch.setChecked(monochromeStatus);
+    private void initMonochromeSwitch(final Switch monochromeSwitch) {
+        monochromeToggle();
 
         monochromeSwitch.setOncheckListener(new Switch.OnCheckListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onCheck(Switch view, boolean check) {
-
                 //Checks if this app can modify system settings
                 boolean canWriteSettings = context.checkCallingOrSelfPermission("android.permission.WRITE_SECURE_SETTINGS") == PackageManager.PERMISSION_GRANTED;
+
                 if (canWriteSettings) {
                     if (check) {
                         toggleMonochrome(1, context.getContentResolver());
+                        Toast.makeText(context, "1", Toast.LENGTH_SHORT).show();
                     } else {
                         toggleMonochrome(0, context.getContentResolver());
+
+                        Toast.makeText(context, "0", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     //If currently cant modify system settings, app will ask for permission
                     showRootWorkaroundInstructions(context);
+                    monochromeSwitch.setChecked(false);
                 }
             }
         });
@@ -76,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
         alert.show();
     }
 
+    /**
+     * @param context
+     * @param text    - Copy the text passed in the parameters onto the clipboard
+     */
     private void setClipboard(Context context, String text) {
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
             android.text.ClipboardManager clipboard = (android.text.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -88,11 +96,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean monochromeStatus() {
-        if (Settings.Secure.getInt(getContentResolver(), ACCESSIBILITY_DISPLAY_DALTONIZER, -1) == -1) {
+        if (Settings.Secure.getInt(getContentResolver(), ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED, 0) == 0) {
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
     /**
